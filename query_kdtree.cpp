@@ -1,5 +1,5 @@
 // query_kdtree - Reads a serialized kdtree, the generating data set,
-//                and a third file containing a set of query points; then, 
+//                and a third file containing a set of query points; then,
 //                tests each kdtree query result against a brute-force
 //                search (the ground truth) to determine if the kdtree is
 //                operating correctly
@@ -41,11 +41,11 @@ main(int argc, char *argv[])
 	   << "as the third" << endl;
       exit(1);
    }
-   
+
    // Deserialize the tree
    cout << "Deserizalizing " << argv[1] << endl;
    KDTree<DATA_TYPE> tree;
-   ifstream infile(argv[1], ifstream::in);   
+   ifstream infile(argv[1], ifstream::in);
    if (infile.is_open())
    {
       infile >> tree;
@@ -55,7 +55,7 @@ main(int argc, char *argv[])
    // Read the original point data (for use later for correctness checking)
    cout << "Reading original points from " << argv[2] << endl;
    vector< vector<DATA_TYPE> > originalPoints = readPointsFromFile(argv[2]);
-   
+
    // Read the query data
    cout << "Reading query points from " << argv[3] << endl;
    vector< vector<DATA_TYPE> > queries = readPointsFromFile(argv[3]);
@@ -64,7 +64,7 @@ main(int argc, char *argv[])
    string resultsFilename(argv[3]);
    resultsFilename += ".results";
    ofstream outfile(resultsFilename);
-    
+
    for (const auto& query : queries)
    {
       IndexedPoint<DATA_TYPE> best = tree.nearestNeighbor(query);
@@ -157,7 +157,7 @@ int bruteForceClosest(const vector<vector<DATA_TYPE>>& data,
 		      const vector<DATA_TYPE>& query)
 {
    const int dimension = query.size();
-   
+
    vector<DATA_TYPE> best;
    int bestIndex = -1;
    DATA_TYPE bestDist = numeric_limits<DATA_TYPE>::max();

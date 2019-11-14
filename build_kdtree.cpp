@@ -30,7 +30,7 @@ main(int argc, char *argv[])
    {
       cout << "Reading data from " << argv[1] << endl;
    }
-   
+
    // Read the first line to determine the dimensionality
    ifstream dataFile(argv[1], ifstream::in);
    int dimension = 0;
@@ -77,7 +77,7 @@ main(int argc, char *argv[])
       }
       dataFile.close();
    }
-   
+
    cout << "Read " << data.size() << " vectors of size " << dimension
 	<< endl;
 

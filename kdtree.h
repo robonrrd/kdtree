@@ -21,12 +21,12 @@ class IndexedPoint
   public:
   IndexedPoint() : index(-1)
    {}
-   
+
   IndexedPoint(int idx, const std::vector<T>& pt)
      : index(idx)
      , point(pt)
    {}
-   
+
    int index;
    std::vector<T> point;
 };
@@ -46,7 +46,7 @@ template<class T> class KDNode
       : _leftNode{nullptr}
       , _rightNode{nullptr}
    {};
-   
+
    void build(std::vector< IndexedPoint<T> >& data,
 	      typename std::vector< IndexedPoint<T> >::iterator start,
 	      typename std::vector< IndexedPoint<T> >::iterator end,
@@ -102,13 +102,13 @@ template<class T> class KDTree
 						      const KDTree<U> &tree);
    template<class U> friend std::istream& operator>> (std::istream &is,
 						      KDTree<U> &node);
-   
+
   private:
    std::unique_ptr<KDNode<T>> _rootNode;
 };
 
 
- 
+
 //////////////////
 // Implementations
 
@@ -122,7 +122,7 @@ class IndexedPointCompare
   IndexedPointCompare(int in_axis)
      : _axis{in_axis}
    {}
-   
+
    bool operator()(const IndexedPoint<T>& i, const IndexedPoint<T>& j) const
    {
       return i.point[_axis] < j.point[_axis];
@@ -138,7 +138,7 @@ template<class T>
 double squaredDistance(const std::vector<T>& a, const std::vector<T>& b)
 {
    assert(a.size() == b.size());
-   
+
    double dist = 0.0;
    for (int ii=0; ii<a.size(); ++ii)
    {
@@ -154,7 +154,7 @@ template <class T>
 bool KDTree<T>::build(const std::vector< std::vector<T> >& data)
 {
    using namespace std;
-   
+
    bool success = false;
    try
    {
@@ -182,7 +182,7 @@ template <class T>
 IndexedPoint<T> KDTree<T>::nearestNeighbor(const std::vector<T>& queryPoint)
 {
    using namespace std;
-   
+
    if (_rootNode == nullptr)
    {
       cerr << "No tree has been constructed" << endl;
@@ -221,7 +221,7 @@ std::ostream& operator<< (std::ostream &out, const KDTree<T>& tree)
    {
       out << *(tree._rootNode);
    }
-   
+
    return out;
 }
 
@@ -231,7 +231,7 @@ std::ostream& operator<< (std::ostream &out, const KDTree<T>& tree)
 int intFromStream(std::istream& in)
 {
    using namespace std;
-      
+
    // Read an int
    string line;
    getline(in, line);
@@ -251,7 +251,7 @@ template <class T>
 std::ostream& operator<< (std::ostream &out, const KDNode<T>& node)
 {
    using namespace std;
-   
+
    out << node._axis << endl;
 
    out << node._location.index << endl;
@@ -260,7 +260,7 @@ std::ostream& operator<< (std::ostream &out, const KDNode<T>& node)
       out << x << " ";
    }
    out << endl;
-   
+
    if (node._leftNode != nullptr)
    {
       out << *(node._leftNode);
@@ -269,7 +269,7 @@ std::ostream& operator<< (std::ostream &out, const KDNode<T>& node)
    {
       out << NULLPTR_MARKER << endl;
    }
-   
+
    if (node._rightNode != nullptr)
    {
       out << *(node._rightNode);
@@ -278,7 +278,7 @@ std::ostream& operator<< (std::ostream &out, const KDNode<T>& node)
    {
       out << NULLPTR_MARKER << endl;
    }
-   
+
    return out;
 }
 
@@ -310,7 +310,7 @@ std::istream& operator>> (std::istream &in, KDNode<T>& node)
    using namespace std;
 
    node._location.index = intFromStream(in);
-      
+
    string line;
    getline(in, line);
    istringstream point_stream(line);
@@ -333,7 +333,7 @@ std::istream& operator>> (std::istream &in, KDNode<T>& node)
       node._leftNode = std::unique_ptr<KDNode<T>>( new KDNode<T>(axis) );
       in >> *(node._leftNode);
    }
-      
+
    // read axis of right child
    axis = intFromStream(in);
    if (axis == -1)
@@ -372,14 +372,14 @@ void KDNode<T>::build(std::vector< IndexedPoint<T> >& data,
       _rightNode = std::unique_ptr<KDNode<T>>( nullptr );
       return;
    }
-   
+
    // find median element
    typename vector<IndexedPoint<T>>::iterator medianItr = start+dataSize/2;
    nth_element(start, medianItr, end,  IndexedPointCompare<T>(_axis));
 
    _location = *medianItr; // copy, so we can discard the data vector
 			   // after construction
-   
+
    typename vector<IndexedPoint<T>>::iterator leftStart = start;
    typename vector<IndexedPoint<T>>::iterator leftEnd = medianItr;
    typename vector<IndexedPoint<T>>::iterator rightStart = medianItr;
@@ -390,11 +390,11 @@ void KDNode<T>::build(std::vector< IndexedPoint<T> >& data,
       _leftNode = std::unique_ptr<KDNode<T>>( new KDNode<T> );
       _leftNode->build(data, leftStart, leftEnd, _axis);
    }
-   
+
    if (rightStart != rightEnd)
    {
       _rightNode = std::unique_ptr<KDNode<T>>( new KDNode<T> );
-      _rightNode->build(data, rightStart, rightEnd, _axis);      
+      _rightNode->build(data, rightStart, rightEnd, _axis);
    }
 }
 
@@ -405,7 +405,7 @@ void KDNode<T>::nearestNeighbor(const std::vector<T>& queryPoint,
 				double& bestSqrDistance)
 {
    using namespace std;
-      
+
    assert(_location.point.size() == queryPoint.size() );
 
    // If the point at this node is closer than our current best, make
@@ -440,6 +440,6 @@ void KDNode<T>::nearestNeighbor(const std::vector<T>& queryPoint,
       else if (_leftNode != nullptr)
       {
 	 _leftNode->nearestNeighbor(queryPoint, best, bestSqrDistance);
-      }  
+      }
    }
 }
